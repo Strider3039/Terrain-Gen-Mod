@@ -1,0 +1,14 @@
+# Larion Lite 0.1.0 — default COMMON config (same as CurseForge release).
+# Copy to your instance: config/larion_lite-common.toml (when game is closed)
+# to restore 0.1.0 behavior if you changed sliders.
+
+[terrain]
+terrain_preset = "dramatic_explorer"
+caves_enabled = true
+cave_threshold = 0.36
+cave_noise_scale = 0.054
+cave_surface_padding = 12
+detail_scale = 0.095
+detail_amplitude = 20.0
+cave_chamber_scale = 0.029
+cave_chamber_threshold = 0.19
