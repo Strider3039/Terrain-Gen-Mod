@@ -1,0 +1,127 @@
+{
+  "type": "minecraft:add",
+  "argument1": {
+    "type": "minecraft:add",
+    "argument1": {
+      "type": "minecraft:add",
+      "argument1": {
+        "type": "minecraft:mul",
+        "argument1": "minecraft:overworld/jaggedness",
+        "argument2": {
+          "type": "minecraft:half_negative",
+          "argument": {
+            "type": "minecraft:noise",
+            "noise": "larion:terrain/jagged",
+            "xz_scale": 2.0,
+            "y_scale": 0.0
+          }
+        }
+      },
+      "argument2": {
+        "type": "minecraft:mul",
+        "argument1": "larion:overworld/terrain/cliffs",
+        "argument2": "larion:overworld/terrain/cliffs_multiplier"
+      }
+    },
+    "argument2": {
+      "type": "minecraft:mul",
+      "argument1": "larion:overworld/terrain/hills",
+      "argument2": "larion:overworld/terrain/hills_multiplier"
+    }
+  },
+  "argument2": {
+    "type": "minecraft:add",
+    "argument1": {
+      "type": "minecraft:mul",
+      "argument1": "larion:overworld/terrain/mountain_envelope",
+      "argument2": {
+        "type": "minecraft:add",
+        "argument1": 10.0,
+        "argument2": {
+          "type": "minecraft:mul",
+          "argument1": 28.0,
+          "argument2": {
+            "type": "minecraft:clamp",
+            "input": {
+              "type": "minecraft:add",
+              "argument1": {
+                "type": "minecraft:mul",
+                "argument1": 0.5,
+                "argument2": {
+                  "type": "minecraft:abs",
+                  "argument": {
+                    "type": "minecraft:noise",
+                    "noise": "larion:ridges/peaks_a",
+                    "xz_scale": 0.34,
+                    "y_scale": 0.0
+                  }
+                }
+              },
+              "argument2": {
+                "type": "minecraft:mul",
+                "argument1": 0.5,
+                "argument2": {
+                  "type": "minecraft:square",
+                  "argument": {
+                    "type": "minecraft:noise",
+                    "noise": "larion:terrain/cliffs_b",
+                    "xz_scale": 0.16,
+                    "y_scale": 0.0
+                  }
+                }
+              }
+            },
+            "min": 0.0,
+            "max": 1.0
+          }
+        }
+      }
+    },
+    "argument2": {
+      "type": "minecraft:mul",
+      "argument1": "larion:overworld/terrain/wow_envelope",
+      "argument2": {
+        "type": "minecraft:add",
+        "argument1": 32.0,
+        "argument2": {
+          "type": "minecraft:mul",
+          "argument1": 56.0,
+          "argument2": {
+            "type": "minecraft:clamp",
+            "input": {
+              "type": "minecraft:add",
+              "argument1": {
+                "type": "minecraft:mul",
+                "argument1": 0.55,
+                "argument2": {
+                  "type": "minecraft:abs",
+                  "argument": {
+                    "type": "minecraft:noise",
+                    "noise": "larion:ridges/peaks_a",
+                    "xz_scale": 0.38,
+                    "y_scale": 0.0
+                  }
+                }
+              },
+              "argument2": {
+                "type": "minecraft:mul",
+                "argument1": 0.45,
+                "argument2": {
+                  "type": "minecraft:square",
+                  "argument": {
+                    "type": "minecraft:noise",
+                    "noise": "larion:terrain/cliffs_b",
+                    "xz_scale": 0.18,
+                    "y_scale": 0.0
+                  }
+                }
+              }
+            },
+            "min": 0.0,
+            "max": 1.0
+          }
+        }
+      }
+    }
+  }
+}

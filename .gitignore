@@ -1,0 +1,29 @@
+# Gradle / Forge (applies in subfolders)
+build/
+.gradle/
+out/
+bin/
+run/
+eclipse/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.settings/
+.classpath
+.project
+.metadata/
+*.launch
+
+# Large local backups (adjust if you need zips in repo)
+*.zip
+
+# OS / misc
+.DS_Store
+Thumbs.db
+*.log
+
+# Forge MDK churn
+forge*changelog.txt
