@@ -8,7 +8,9 @@ caves_enabled = true
 cave_threshold = 0.36
 cave_noise_scale = 0.054
 cave_surface_padding = 12
-detail_scale = 0.095
-detail_amplitude = 20.0
+detail_scale = 0.083
+detail_amplitude = 12.5
 cave_chamber_scale = 0.029
 cave_chamber_threshold = 0.19
+# Plateaus / deep canals / hills are preset-driven (dramatic_explorer). Advanced: override in world preset JSON:
+# terrain.larion_lite_enhance.elevation_layers — plateau_mid_blocks, deep_canal_depth, hill_amplitude, peak_boost_blocks, ...

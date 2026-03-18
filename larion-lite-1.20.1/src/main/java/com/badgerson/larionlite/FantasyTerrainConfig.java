@@ -4,38 +4,46 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 /**
- * Column-scale terrain + caves. O(1) 2D samples per column; optional valley/channel/scree.
+ * Column-scale terrain + caves. O(1) 2D samples per column; plateaus, valleys, channels, hills, peaks.
  */
 public final class FantasyTerrainConfig {
 
-    /** Baseline: dramatic_explorer-style + macro contrast + valleys (preset can override). */
+    /** Baseline: layered elevation — plateaus, valleys, deep canals, hills, peak boost. */
     public static final FantasyTerrainConfig DEFAULT = new FantasyTerrainConfig(
             0.0105,
             0.039,
             550.0,
             0.052,
-            42.0,
+            46.0,
             16,
-            112,
+            162,
             false,
             0.054,
             0.36,
             12,
-            0.095,
-            20.0,
+            0.083,
+            12.5,
             0.029,
             0.19,
             1.0,
-            0.78,
-            10.0,
-            0.076,
-            9,
-            0.011,
-            5,
-            0.016,
+            0.82,
+            7.0,
+            0.074,
+            14,
+            0.0105,
+            8,
+            0.0155,
             true,
             5,
-            0.12);
+            0.12,
+            14,
+            16,
+            0.0046,
+            16.5,
+            16.0,
+            0.056,
+            14,
+            0.034);
 
     public static final Codec<FantasyTerrainConfig> CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.DOUBLE.fieldOf("continent_scale").forGetter(FantasyTerrainConfig::continentScale),
@@ -80,14 +88,19 @@ public final class FantasyTerrainConfig {
                 caveSurfacePadding, detailScale, detailAmplitude, caveChamberScale, caveChamberThreshold,
                 e.detailContinentBlend(), e.macroVerticalContrast(), e.ridgeFineAmplitude(), e.ridgeFineScale(),
                 e.valleyDepth(), e.valleyScale(), e.channelDepth(), e.channelScale(),
-                e.screeEnabled(), e.screeMinDelta(), e.cavePeakReduction());
+                e.screeEnabled(), e.screeMinDelta(), e.cavePeakReduction(),
+                e.plateauMidBlocks(), e.plateauHighExtra(), e.plateauScale(), e.peakBoostBlocks(),
+                e.hillAmplitude(), e.hillScale(), e.deepCanalDepth(), e.deepCanalScale());
     }
 
     private LarionTerrainEnhance enhanceForCodec() {
         return new LarionTerrainEnhance(
                 detailContinentBlend, macroVerticalContrast, ridgeFineAmplitude, ridgeFineScale,
                 valleyDepth, valleyScale, channelDepth, channelScale,
-                screeEnabled, screeMinDelta, cavePeakReduction);
+                screeEnabled, screeMinDelta, cavePeakReduction,
+                new LarionElevationLayers(
+                        plateauMidBlocks, plateauHighExtra, plateauScale, peakBoostBlocks,
+                        hillAmplitude, hillScale, deepCanalDepth, deepCanalScale));
     }
 
     private final double continentScale;
@@ -105,23 +118,25 @@ public final class FantasyTerrainConfig {
     private final double detailAmplitude;
     private final double caveChamberScale;
     private final double caveChamberThreshold;
-    /** 0 = uniform detail; 1 = more detail in lowlands, smoother peaks. */
     private final double detailContinentBlend;
-    /** 0 = flat height_variation; ~0.8 = basins calmer, highlands more dramatic. */
     private final double macroVerticalContrast;
-    /** Secondary ridge octave (0 disables extra sample). */
     private final double ridgeFineAmplitude;
     private final double ridgeFineScale;
-    /** Blocks subtracted by valley noise (0 = off). */
     private final int valleyDepth;
     private final double valleyScale;
-    /** Extra linear lows (0 = off). */
     private final int channelDepth;
     private final double channelScale;
     private final boolean screeEnabled;
     private final int screeMinDelta;
-    /** Added to cave thresholds on high terrain (fewer caves on peaks, faster gen). */
     private final double cavePeakReduction;
+    private final int plateauMidBlocks;
+    private final int plateauHighExtra;
+    private final double plateauScale;
+    private final double peakBoostBlocks;
+    private final double hillAmplitude;
+    private final double hillScale;
+    private final int deepCanalDepth;
+    private final double deepCanalScale;
 
     public FantasyTerrainConfig(
             double continentScale,
@@ -149,7 +164,15 @@ public final class FantasyTerrainConfig {
             double channelScale,
             boolean screeEnabled,
             int screeMinDelta,
-            double cavePeakReduction) {
+            double cavePeakReduction,
+            int plateauMidBlocks,
+            int plateauHighExtra,
+            double plateauScale,
+            double peakBoostBlocks,
+            double hillAmplitude,
+            double hillScale,
+            int deepCanalDepth,
+            double deepCanalScale) {
         this.continentScale = continentScale;
         this.warpSampleScale = warpSampleScale;
         this.warpBlockStrength = warpBlockStrength;
@@ -176,6 +199,14 @@ public final class FantasyTerrainConfig {
         this.screeEnabled = screeEnabled;
         this.screeMinDelta = Math.max(2, screeMinDelta);
         this.cavePeakReduction = MthClamp(cavePeakReduction, 0.0, 0.28);
+        this.plateauMidBlocks = Math.max(0, plateauMidBlocks);
+        this.plateauHighExtra = Math.max(0, plateauHighExtra);
+        this.plateauScale = Math.max(1e-6, plateauScale);
+        this.peakBoostBlocks = Math.max(0.0, peakBoostBlocks);
+        this.hillAmplitude = Math.max(0.0, hillAmplitude);
+        this.hillScale = Math.max(1e-6, hillScale);
+        this.deepCanalDepth = Math.max(0, deepCanalDepth);
+        this.deepCanalScale = Math.max(1e-6, deepCanalScale);
     }
 
     private static double MthClamp(double v, double a, double b) {
@@ -284,5 +315,37 @@ public final class FantasyTerrainConfig {
 
     public double cavePeakReduction() {
         return cavePeakReduction;
+    }
+
+    public int plateauMidBlocks() {
+        return plateauMidBlocks;
+    }
+
+    public int plateauHighExtra() {
+        return plateauHighExtra;
+    }
+
+    public double plateauScale() {
+        return plateauScale;
+    }
+
+    public double peakBoostBlocks() {
+        return peakBoostBlocks;
+    }
+
+    public double hillAmplitude() {
+        return hillAmplitude;
+    }
+
+    public double hillScale() {
+        return hillScale;
+    }
+
+    public int deepCanalDepth() {
+        return deepCanalDepth;
+    }
+
+    public double deepCanalScale() {
+        return deepCanalScale;
     }
 }
