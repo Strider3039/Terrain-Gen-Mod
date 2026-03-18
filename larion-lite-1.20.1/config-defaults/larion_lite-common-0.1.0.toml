@@ -1,4 +1,4 @@
-# Larion Lite 0.1.0 — default COMMON config (same as CurseForge release).
+# Larion Lite — shipped COMMON defaults (smooth intentional terrain + calm valleys).
 # Copy to your instance: config/larion_lite-common.toml (when game is closed)
 # to restore 0.1.0 behavior if you changed sliders.
 
@@ -8,8 +8,8 @@ caves_enabled = true
 cave_threshold = 0.36
 cave_noise_scale = 0.054
 cave_surface_padding = 12
-detail_scale = 0.083
-detail_amplitude = 12.5
+detail_scale = 0.060
+detail_amplitude = 6.5
 cave_chamber_scale = 0.029
 cave_chamber_threshold = 0.19
 # Plateaus / deep canals / hills are preset-driven (dramatic_explorer). Advanced: override in world preset JSON:

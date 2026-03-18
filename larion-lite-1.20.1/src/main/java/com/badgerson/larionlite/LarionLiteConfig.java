@@ -37,11 +37,11 @@ public final class LarionLiteConfig {
                 .comment("Solid band under surface for grass/structures.")
                 .defineInRange("cave_surface_padding", 12, 4, 28);
         DETAIL_SCALE = b
-                .comment("Small-scale surface hills (2D, per column). Lower = smoother.")
-                .defineInRange("detail_scale", 0.083, 0.04, 0.2);
+                .comment("Lower = smoother, broader landforms. Default tuned to reduce shared hill chatter.")
+                .defineInRange("detail_scale", 0.060, 0.04, 0.2);
         DETAIL_AMPLITUDE = b
-                .comment("High = choppy steps. Try 11–16 after elevation tuning.")
-                .defineInRange("detail_amplitude", 12.5, 0.0, 36.0);
+                .comment("High = noisy contouring. Lower = calmer, more intentional slopes.")
+                .defineInRange("detail_amplitude", 6.5, 0.0, 36.0);
         CAVE_CHAMBER_SCALE = b
                 .comment("Large cave rooms: lower scale = bigger chambers.")
                 .defineInRange("cave_chamber_scale", 0.029, 0.014, 0.055);

@@ -7,18 +7,18 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public final class LarionTerrainEnhance {
 
     static final LarionTerrainEnhance DEFAULT = new LarionTerrainEnhance(
-            1.0, 0.78, 7.0, 0.076, 14, 0.0105, 8, 0.0155, true, 5, 0.12,
+            1.0, 0.78, 3.8, 0.064, 11, 0.0092, 6, 0.0138, true, 5, 0.12,
             LarionElevationLayers.DEFAULT);
 
     static final Codec<LarionTerrainEnhance> CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.DOUBLE.optionalFieldOf("detail_continent_blend", 1.0).forGetter(LarionTerrainEnhance::detailContinentBlend),
             Codec.DOUBLE.optionalFieldOf("macro_vertical_contrast", 0.78).forGetter(LarionTerrainEnhance::macroVerticalContrast),
-            Codec.DOUBLE.optionalFieldOf("ridge_fine_amplitude", 7.0).forGetter(LarionTerrainEnhance::ridgeFineAmplitude),
-            Codec.DOUBLE.optionalFieldOf("ridge_fine_scale", 0.076).forGetter(LarionTerrainEnhance::ridgeFineScale),
-            Codec.INT.optionalFieldOf("valley_depth", 14).forGetter(LarionTerrainEnhance::valleyDepth),
-            Codec.DOUBLE.optionalFieldOf("valley_scale", 0.0105).forGetter(LarionTerrainEnhance::valleyScale),
-            Codec.INT.optionalFieldOf("channel_depth", 8).forGetter(LarionTerrainEnhance::channelDepth),
-            Codec.DOUBLE.optionalFieldOf("channel_scale", 0.0155).forGetter(LarionTerrainEnhance::channelScale),
+            Codec.DOUBLE.optionalFieldOf("ridge_fine_amplitude", 3.8).forGetter(LarionTerrainEnhance::ridgeFineAmplitude),
+            Codec.DOUBLE.optionalFieldOf("ridge_fine_scale", 0.064).forGetter(LarionTerrainEnhance::ridgeFineScale),
+            Codec.INT.optionalFieldOf("valley_depth", 11).forGetter(LarionTerrainEnhance::valleyDepth),
+            Codec.DOUBLE.optionalFieldOf("valley_scale", 0.0092).forGetter(LarionTerrainEnhance::valleyScale),
+            Codec.INT.optionalFieldOf("channel_depth", 6).forGetter(LarionTerrainEnhance::channelDepth),
+            Codec.DOUBLE.optionalFieldOf("channel_scale", 0.0138).forGetter(LarionTerrainEnhance::channelScale),
             Codec.BOOL.optionalFieldOf("scree_enabled", true).forGetter(LarionTerrainEnhance::screeEnabled),
             Codec.INT.optionalFieldOf("scree_min_delta", 5).forGetter(LarionTerrainEnhance::screeMinDelta),
             Codec.DOUBLE.optionalFieldOf("cave_peak_reduction", 0.12).forGetter(LarionTerrainEnhance::cavePeakReduction),

@@ -299,28 +299,30 @@ public final class FantasyChunkGenerator extends ChunkGenerator {
         int hvEff = Math.max(24, Mth.floor(t.heightVariation() * hvMult));
 
         // Low macro relief → calmer plains (Fix 3); high relief → less HF grain (Fix 2).
-        double plainsCalm = 1.0 - smoothstep(0.10, 0.42, absC);
-        double highRelief = smoothstep(0.36, 0.90, absC);
-        double detailHighAtten = (1.0 - 0.44 * highRelief) * 0.82;
-        double ridgeFineHighAtten = (1.0 - 0.38 * smoothstep(0.40, 0.92, absC)) * 0.84;
+        double plainsCalm = 1.0 - smoothstep(0.12, 0.46, absC);
+        double highRelief = smoothstep(0.42, 0.92, absC);
+        double detailHighAtten = (1.0 - 0.48 * highRelief) * 0.78;
+        double ridgeFineHighAtten = (1.0 - 0.42 * smoothstep(0.46, 0.94, absC)) * 0.80;
 
+        double sereneValley = 1.0 - smoothstep(0.18, 0.62, absC);
         double ridge = noises.ridge(worldX, worldZ, t.ridgeScale()) * t.ridgeBlockAmplitude();
-        ridge *= 1.0 - 0.15 * plainsCalm;
+        ridge *= (1.0 - 0.18 * plainsCalm) * (1.0 - 0.16 * sereneValley);
         double ridgeFine = t.ridgeFineAmplitude() > 1e-6
                 ? noises.ridgeFine(worldX, worldZ, t.ridgeFineScale()) * t.ridgeFineAmplitude() * ridgeFineHighAtten
-                        * (1.0 - 0.22 * plainsCalm)
+                        * (1.0 - 0.28 * plainsCalm) * (1.0 - 0.42 * sereneValley)
                 : 0.0;
         double detail = noises.detail(worldX, worldZ, t.detailScale()) * t.detailAmplitude() * detailMul * detailHighAtten
-                * (1.0 - 0.40 * plainsCalm);
+                * (1.0 - 0.48 * plainsCalm) * (1.0 - 0.48 * sereneValley) * 0.86;
         double ridgeCombined = ridge + ridgeFine;
         double hill = t.hillAmplitude() > 1e-6
-                ? noises.hill(wx, wz, t.hillScale()) * t.hillAmplitude() * (1.0 - 0.36 * plainsCalm)
+                ? noises.hill(wx, wz, t.hillScale()) * t.hillAmplitude() * (1.0 - 0.44 * plainsCalm)
+                        * (1.0 - 0.42 * sereneValley)
                 : 0.0;
         double ridgeNorm = t.ridgeBlockAmplitude() + t.ridgeFineAmplitude() + 1e-6;
-        double peakLift = t.peakBoostBlocks()
-                * smoothstep(0.20, 0.80, absC)
-                * Mth.clamp(Math.abs(ridgeCombined) / ridgeNorm, 0.0, 1.15);
-        peakLift *= 1.0 + 0.20 * smoothstep(0.54, 0.93, absC);
+        double inMountain = smoothstep(0.48, 0.90, absC) * smoothstep(0.08, 0.58, continent);
+        double ridgeAccent = 0.28 + 0.58 * Mth.clamp(Math.abs(ridgeCombined) / ridgeNorm, 0.0, 1.06);
+        double peakLift = t.peakBoostBlocks() * inMountain * ridgeAccent;
+        peakLift *= 1.0 + 0.08 * smoothstep(0.68, 0.94, absC);
 
         // Layer 1: macro stretch + curve, then mid compression + low/high separation (Fix 1).
         double macroStretch = 1.36 + 0.16 * smoothstep(0.02, 0.86, continent);
@@ -332,10 +334,11 @@ public final class FantasyChunkGenerator extends ChunkGenerator {
             double n = Mth.clamp(-continent, 0.0, 1.0);
             macroTerm -= Math.pow(n, 1.35) * hvEff * 0.06;
         }
-        double midBand = smoothstep(0.07, 0.28, absC) * (1.0 - smoothstep(0.48, 0.82, absC));
-        macroTerm *= 1.0 - 0.095 * midBand;
+        double midBand = smoothstep(0.08, 0.30, absC) * (1.0 - smoothstep(0.50, 0.82, absC));
+        macroTerm *= 1.0 - 0.048 * midBand;
         macroTerm -= hvEff * 0.040 * (1.0 - smoothstep(-0.42, -0.09, continent));
         macroTerm += hvEff * 0.055 * smoothstep(0.20, 0.70, continent);
+        macroTerm += hvEff * 0.118 * smoothstep(0.44, 0.90, absC) * smoothstep(0.10, 0.56, continent);
 
         int sea = getSeaLevel();
         int y = sea + t.baseHeightOffset()
@@ -343,27 +346,27 @@ public final class FantasyChunkGenerator extends ChunkGenerator {
 
         if (t.plateauMidBlocks() > 0 || t.plateauHighExtra() > 0) {
             double pn = (noises.plateau(wx, wz, t.plateauScale()) + 1.0) * 0.5;
-            double midW = smoothstep(0.48, 0.66, pn);
-            double highW = smoothstep(0.68, 0.86, pn);
-            double onLand = smoothstep(-0.10, 0.26, continent);
-            double notSpire = 0.5 + 0.5 * (1.0 - smoothstep(0.74, 0.96, absC));
-            double plateauMask = onLand * notSpire;
+            double midW = smoothstep(0.54, 0.72, pn);
+            double highW = smoothstep(0.76, 0.92, pn);
+            double onLand = smoothstep(0.02, 0.34, continent);
+            double notSpire = 1.0 - smoothstep(0.68, 0.90, absC);
+            double plateauMask = onLand * notSpire * (1.0 - 0.58 * sereneValley);
             y += Mth.floor((t.plateauMidBlocks() * midW + t.plateauHighExtra() * highW) * plateauMask);
         }
 
         if (t.valleyDepth() > 0 || t.channelDepth() > 0 || t.deepCanalDepth() > 0) {
-            double lowlandMask = 1.0 - smoothstep(0.22, 0.88, absC);
+            double lowlandMask = 1.0 - smoothstep(0.30, 0.86, absC);
             if (t.valleyDepth() > 0) {
                 double vn = (noises.valley(worldX, worldZ, t.valleyScale()) + 1.0) * 0.5;
-                y -= Mth.floor(t.valleyDepth() * vn * vn * lowlandMask);
+                y -= Mth.floor(t.valleyDepth() * 0.84 * Math.pow(vn, 1.46) * lowlandMask);
             }
             if (t.channelDepth() > 0) {
                 double ch = noises.channelTrough(worldX, worldZ, t.channelScale());
-                y -= Mth.floor(t.channelDepth() * ch * ch * lowlandMask);
+                y -= Mth.floor(t.channelDepth() * 0.82 * Math.pow(ch, 1.52) * lowlandMask);
             }
             if (t.deepCanalDepth() > 0) {
                 double dg = noises.deepCanalTrough(worldX, worldZ, t.deepCanalScale());
-                y -= Mth.floor(t.deepCanalDepth() * dg * dg * dg * lowlandMask);
+                y -= Mth.floor(t.deepCanalDepth() * 0.72 * Math.pow(dg, 1.92) * lowlandMask);
             }
         }
 
@@ -533,7 +536,8 @@ public final class FantasyChunkGenerator extends ChunkGenerator {
 
         double ridge(int x, int z, double scale) {
             double v = ridge.getValue(x * scale, 0, z * scale);
-            return v * v * Math.signum(v);
+            double a = Math.abs(v);
+            return Math.pow(a, 1.48) * Math.signum(v);
         }
 
         double detail(int wx, int wz, double scale) {
@@ -542,7 +546,8 @@ public final class FantasyChunkGenerator extends ChunkGenerator {
 
         double ridgeFine(int x, int z, double scale) {
             double v = ridgeFine.getValue(x * scale, 0, z * scale);
-            return v * v * Math.signum(v);
+            double a = Math.abs(v);
+            return Math.pow(a, 1.42) * Math.signum(v);
         }
 
         double valley(int x, int z, double scale) {

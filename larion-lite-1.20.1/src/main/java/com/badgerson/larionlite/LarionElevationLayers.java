@@ -7,17 +7,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public final class LarionElevationLayers {
 
     static final LarionElevationLayers DEFAULT = new LarionElevationLayers(
-            14, 16, 0.0046, 16.5, 16.0, 0.056, 14, 0.034);
+            10, 10, 0.0049, 20.0, 8.5, 0.043, 8, 0.030);
 
     static final Codec<LarionElevationLayers> CODEC = RecordCodecBuilder.create(i -> i.group(
-            Codec.INT.optionalFieldOf("plateau_mid_blocks", 14).forGetter(LarionElevationLayers::plateauMidBlocks),
-            Codec.INT.optionalFieldOf("plateau_high_extra", 16).forGetter(LarionElevationLayers::plateauHighExtra),
-            Codec.DOUBLE.optionalFieldOf("plateau_scale", 0.0046).forGetter(LarionElevationLayers::plateauScale),
-            Codec.DOUBLE.optionalFieldOf("peak_boost_blocks", 16.5).forGetter(LarionElevationLayers::peakBoostBlocks),
-            Codec.DOUBLE.optionalFieldOf("hill_amplitude", 16.0).forGetter(LarionElevationLayers::hillAmplitude),
-            Codec.DOUBLE.optionalFieldOf("hill_scale", 0.056).forGetter(LarionElevationLayers::hillScale),
-            Codec.INT.optionalFieldOf("deep_canal_depth", 14).forGetter(LarionElevationLayers::deepCanalDepth),
-            Codec.DOUBLE.optionalFieldOf("deep_canal_scale", 0.034).forGetter(LarionElevationLayers::deepCanalScale)
+            Codec.INT.optionalFieldOf("plateau_mid_blocks", 10).forGetter(LarionElevationLayers::plateauMidBlocks),
+            Codec.INT.optionalFieldOf("plateau_high_extra", 10).forGetter(LarionElevationLayers::plateauHighExtra),
+            Codec.DOUBLE.optionalFieldOf("plateau_scale", 0.0049).forGetter(LarionElevationLayers::plateauScale),
+            Codec.DOUBLE.optionalFieldOf("peak_boost_blocks", 20.0).forGetter(LarionElevationLayers::peakBoostBlocks),
+            Codec.DOUBLE.optionalFieldOf("hill_amplitude", 8.5).forGetter(LarionElevationLayers::hillAmplitude),
+            Codec.DOUBLE.optionalFieldOf("hill_scale", 0.043).forGetter(LarionElevationLayers::hillScale),
+            Codec.INT.optionalFieldOf("deep_canal_depth", 8).forGetter(LarionElevationLayers::deepCanalDepth),
+            Codec.DOUBLE.optionalFieldOf("deep_canal_scale", 0.030).forGetter(LarionElevationLayers::deepCanalScale)
     ).apply(i, LarionElevationLayers::new));
 
     private final int plateauMidBlocks;
